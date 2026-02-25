@@ -1,7 +1,7 @@
 import { StatCards } from "@/components/stats-cards";
 import { Suspense } from "react";
 import { Greet } from "@/components/greet";
-import { UsageChart } from "@/components/usage-chat";
+import { UsageChart } from "@/components/usage-chart";
 
 export default async function DashboardPage() {
   return (

@@ -53,6 +53,10 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith(route),
   );
 
+  if (user && !isProtected) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   if (isProtected && !user) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }

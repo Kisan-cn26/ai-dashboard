@@ -24,17 +24,8 @@ import {
 } from "recharts";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
-import { DASHBOARD_DATA } from "@/lib/constants";
-
-const chartData = DASHBOARD_DATA.usageHistory.map((d) => ({
-  date: new Date(d.date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  }),
-  tokens: d.tokens,
-  cost: d.cost,
-  requests: d.requests,
-}));
+import { useBillingSummary, useUsageHistory } from "@/services/hooks";
+import { Skeleton } from "./ui/skeleton";
 
 const tokenChartConfig = {
   tokens: {
@@ -59,14 +50,28 @@ const requestsChartConfig = {
 
 export function UsageChart() {
   const [view, setView] = useState<"tokens" | "cost" | "requests">("tokens");
+  const { data: usageHistory, isLoading } = useUsageHistory();
+  const { data: summary } = useBillingSummary();
 
-  return (
+  const chartData = usageHistory?.data.map((d) => ({
+    date: new Date(d.date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }),
+    tokens: d.tokens,
+    cost: d.cost,
+    requests: d.requests,
+  }));
+
+  return isLoading ? (
+    <Skeleton className="h-[378px]" />
+  ) : (
     <Card className="border-border bg-card">
       <CardHeader>
         <div className="flex flex-col gap-1">
           <CardTitle className="text-foreground">Usage Over Time</CardTitle>
           <p className="text-xs text-muted-foreground">
-            {DASHBOARD_DATA.summary.billingPeriod}
+            {summary?.data.billingPeriod}
           </p>
         </div>
         <CardAction>
